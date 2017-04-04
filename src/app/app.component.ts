@@ -8,4 +8,9 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'D3 Practice!';
   data: any = [5,10,15,20,25];
+
+
+  saveData(data) {
+    this.data = data;
+  }
 }

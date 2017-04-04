@@ -36,8 +36,17 @@ export class ScatterplotComponent implements OnInit {
                 return "black";
             }
         });
-
    }
+
+   d3.select('#output').selectAll('div')
+      .data(this.data)
+      .enter()
+      .append('div')
+      .attr('class', 'bar')
+      .style('height', function(d:any) {
+        console.log(typeof d)
+        return d*5+'px';
+      });
   }
 
 }

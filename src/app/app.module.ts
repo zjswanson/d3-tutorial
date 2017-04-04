@@ -6,11 +6,13 @@ import { D3Service } from 'd3-ng2-service';
 
 import { AppComponent } from './app.component';
 import { ScatterplotComponent } from './scatterplot/scatterplot.component';
+import { DataFormComponent } from './data-form/data-form.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ScatterplotComponent
+    ScatterplotComponent,
+    DataFormComponent
   ],
   imports: [
     BrowserModule,
