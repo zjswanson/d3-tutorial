@@ -15,6 +15,11 @@ export class DataFormComponent implements OnInit {
   }
 
   saveData() {
+    let test =
+    this.data.map(function(entry) {
+      return parseInt(entry);
+    });
+    this.data = test;
     this.sendData.emit(this.data);
   }
 }

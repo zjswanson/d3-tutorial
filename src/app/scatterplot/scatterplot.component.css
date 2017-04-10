@@ -1,0 +1,23 @@
+svg .pumpkin {
+  /*fill: yellow;*/
+  stroke: orange;
+  stroke-width: 5;
+}
+
+svg .scatter-label {
+  font-family: sans-serif;
+  font-size: 11px;
+  fill: red;
+}
+
+svg .axis path,
+svg .axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+svg .axis text {
+  font-family: sans-serif;
+  font-size: 11px;
+}
