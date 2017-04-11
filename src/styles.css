@@ -10,3 +10,28 @@ div.bar {
 #output {
   margin-top: 100px;
 }
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+.green {
+  stroke: green;
+  fill: yellow;
+}
+
+.red {
+  stroke: red;
+}
+
+.blue {
+  stroke: blue;
+  fill: red;
+}
+
+.tooltip {
+  color: red;
+  font-size: 10pt;
+}
