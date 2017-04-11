@@ -97,7 +97,6 @@ export class PathComponent implements OnInit {
 
     var tooltip = d3.select("body").append("div")
                                 .style("position", "absolute")
-                                .style("z-index", "10")
                                 .style("visibility", "hidden")
                                 .attr("class", "tooltip")
                                 .text("a simple tooltip");
@@ -114,8 +113,14 @@ export class PathComponent implements OnInit {
                     return yScale(d[1]);
                   })
                 .attr("r", 3)
-                .on("mouseover", function(){return tooltip.style("visibility", "visible");})
-                .on("mousemove", function(){return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
+                .on("mouseover", function(d){
+                  return tooltip.style("visibility", "visible")
+                                .text("(" + d[0] + ", " + d[1] + ")");
+                })
+                .on("mousemove", function(){
+                  return tooltip.style("top", (d3.event.pageY-10)+"px")
+                                .style("left",(d3.event.pageX+10)+"px");
+                })
                 .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
     // Add the X Axis
