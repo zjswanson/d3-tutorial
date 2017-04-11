@@ -11,37 +11,31 @@ export class ScatterplotComponent implements OnInit, OnChanges {
   private parentNativeElement: any;
   @Input() data: any;
   @Input() data2D: any;
+  w: number = 500;
+  h: number = 300;
+  barGraphSVG: any;
+
   constructor(element: ElementRef, d3Service: D3Service) { // <-- pass the D3 Service into the constructor
      this.d3 = d3Service.getD3(); // <-- obtain the d3 object from the D3 Service
      this.parentNativeElement = element.nativeElement;
   }
 
   ngOnInit() {
+    this.barGraphSVG = this.d3.select('#output').append("svg");
+    console.log(this.barGraphSVG);
+    this.barGraphSVG.attr("width", this.w).attr("height", this.h);
+
     let d3 = this.d3; // <-- for convenience use a block scope variable
     let d3ParentElement: Selection<any, any, any, any>; // <-- Use the Selection interface (very basic here for illustration only)
 
     if (this.parentNativeElement !== null) {
-      d3ParentElement = d3.select(this.parentNativeElement); // <-- use the D3 select method
-      // Do more D3 things
-      // d3.select('body').selectAll('p')
-      //   .data(this.data)
-      //   .enter()
-      //   .append('p')
-      //   .text('I contain something!')
-      //   .style("color", function(d) {
-      //       if (d > 15) {   //Threshold of 15
-      //           return "red";
-      //       } else {
-      //           return "black";
-      //       }
-      //   });
+      d3ParentElement = d3.select(this.parentNativeElement);
       this.createAndColorParagraphs();
 
-      let w = 500;
-      let h = 500;
+
       let svg = d3.select('body').append("svg");
-      svg.attr("width", w)
-        .attr("height", h);
+      svg.attr("width", this.w)
+        .attr("height", this.h);
 
       let circles = svg.selectAll("circle")
         .data(this.data)
@@ -51,66 +45,71 @@ export class ScatterplotComponent implements OnInit, OnChanges {
       circles.attr("cx", function(d, i) {
           return (i * 50) + 25;
         })
-        .attr("cy", h/2)
+        .attr("cy", this.h/2)
         .attr("r", function(d: any) {
           return d;
         })
         .attr("fill", "blue");
 
-    // d3.select('#output').selectAll('div')
-    //   .data(this.data)
-    //   .enter()
-    //   .append('div')
-    //   .attr('class', 'bar')
-    //   .style('height', function(d:any) {
-    //     console.log(typeof d)
-    //     return d*5+'px';
-    //   });
+        this.createBarGraph(this.w,this.h);
+        this.labelBarGraph(this.w,this.h);
 
 
-      let barGraphSVG = d3.select('#output').append("svg");
-      barGraphSVG.attr("width", w)
-        .attr("height", h);
-      let barWidth = w / this.data.length;
-
-      barGraphSVG.selectAll("rect")
-        .data(this.data)
-        .enter()
-        .append('rect')
-        .attr("width", barWidth)
-        .attr("height", function(d: any) {
-          return 5*d;
-        })
-        .attr("y", function(d: any) {
-          return h - 5 * d;
-        })
-        .attr("x", function(d: any, i) {
-          return i * barWidth;
-        })
-        .attr("fill", function(d: any) {
-          return "rgb(0, 0, " + d*10 + ")";
-        });
-
-      barGraphSVG.selectAll("text")
-        .data(this.data)
-        .enter()
-        .append("text")
-        .text(function(d: any) {
-          return d;
-        })
-        .attr("x", function(d: any, i) {
-          return i * barWidth;
-        })
-        .attr("y", function(d: any) {
-          return h - 5*d;
-        });
-
-        this.drawScatterPlot();
     }
   }
 
   ngOnChanges() {
+    if (this.barGraphSVG) {
+      this.createBarGraph(this.w,this.h);
+      this.labelBarGraph(this.w,this.h);
+    }
     this.updateParagraphs();
+    this.drawScatterPlot();
+  }
+
+  createBarGraph(w,h) {
+    let barWidth = w / this.data.length;
+    let graph = this.barGraphSVG.selectAll("rect").data(this.data)
+
+      graph.enter()
+      .append('rect')
+      .merge(graph)
+      .transition()
+      .attr("width", barWidth)
+      .attr("height", function(d: any) {
+        return 5*d;
+      })
+      .attr("y", function(d: any) {
+        return h - 5 * d;
+      })
+      .attr("x", function(d: any, i) {
+        return i * barWidth;
+      })
+      .attr("fill", function(d: any) {
+        return "rgb(0, 0, " + d*10 + ")";
+      });
+  }
+
+  labelBarGraph(w,h) {
+
+    let barWidth = w / this.data.length;
+    let labels = this.barGraphSVG.selectAll("text").data(this.data)
+
+    labels.enter()
+      .append("text")
+      .merge(labels)
+      .transition()
+      .text(function(d: any) {
+        return d;
+      })
+      .attr("x", function(d: any, i) {
+        return i * barWidth;
+      })
+      .attr("y", function(d: any) {
+        return h - 5*d;
+      });
+
+
   }
 
   createAndColorParagraphs() {
@@ -132,7 +131,9 @@ export class ScatterplotComponent implements OnInit, OnChanges {
   updateParagraphs() {
     this.d3.select('body').selectAll('p')
       .data(this.data)
-      .text('I just changed!')
+      .text(function(d) {
+          return 'I have a value of' + d;
+      })
       .style("color", function(d) {
           if (d > 15) {   //Threshold of 15
               return "red";
